@@ -28,8 +28,8 @@
     data(){
       return{
         loginForm:{
-          username:'zs',
-          password:'123'
+          username:'admin',
+          password:'123456'
         },
         loginFormRules:{
           username:[
@@ -49,12 +49,19 @@
         this.$refs.form.resetFields()
       },
       login(){
-        this.$refs.form.validate(vaild=>{
+        this.$refs.form.validate(async vaild=>{
           console.log(vaild)
-          // if(!vaild){
-          //   return
-          // }
-          // this.$http.post('')
+          if(!vaild){
+            return
+          }
+          const {data}= await this.$http.post('login',this.loginForm)
+          console.log(data)
+          if(data.meta.status!==200){
+            return this.$message.error('登录失败')
+          }
+          this.$message.success('登录成功')
+          window.sessionStorage.setItem('token',data.data.token)
+          this.$router.push('/home')
         })
       }
     }
